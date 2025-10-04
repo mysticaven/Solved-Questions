@@ -1,5 +1,5 @@
 import java.util.*;
-
+//easy version distinct
 public class SubarrayMaxK1 {
     public static int countSubarraysWithMaxK1Distinct(int[] arr, int k1) {
         int n = arr.length;
@@ -30,7 +30,7 @@ public class SubarrayMaxK1 {
         int y = r - idx - 1;
         return (x + 1) * (y + 1);
     }
-
+//hard with repeated
     public static int countSubarraysWithMaxK1Repeated(int[] arr, int k1) {
         int n = arr.length;
         int[] prevGreater = new int[n];
