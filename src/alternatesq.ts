@@ -1,36 +1,22 @@
 🧮 Function 1: maxAlternatingSum
 function maxAlternatingSum(nums: number[]): number {
-  const n = nums.length;
+    let ans = 0n;
+    nums = nums.map(Math.abs);
+    nums.sort((a, b) => a - b);
 
-  // Step 1: Square each element
-  for (let i = 0; i < n; i++) {
-    nums[i] = nums[i] * nums[i];
-  }
-
-  // Step 2: Sort in descending order
-  nums.sort((a, b) => b - a);
-
-  // Step 3: Determine midpoint
-  let d: number;
-  if (n % 2 === 0) {
-    d = n / 2 - 1;
-  } else {
-    d = Math.floor(n / 2);
-  }
-
-  // Step 4: Compute alternating sum
-  let ans = 0;
-  for (let i = 0; i < n; i++) {
-    if (i <= d) {
-      ans += nums[i]*nums[i];
-    } else {
-      ans -= nums[i]*nums[i];
+    for (let i = 0; i < Math.floor(nums.length / 2); i++) {
+        const high = BigInt(nums[nums.length - i - 1]);
+        const low = BigInt(nums[i]);
+        ans += high * high - low * low;
     }
-  }
 
-  return ans;
+    if (nums.length % 2 === 1) {
+        const mid = BigInt(nums[Math.floor(nums.length / 2)]);
+        ans += mid * mid;
+    }
+
+    return Number(ans);
 }
-
 🧠 Function 2: countStableSubarrays
 📝 Concept
 
