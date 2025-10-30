@@ -22,9 +22,9 @@ function maxAlternatingSum(nums: number[]): number {
   let ans = 0;
   for (let i = 0; i < n; i++) {
     if (i <= d) {
-      ans += nums[i];
+      ans += nums[i]*nums[i];
     } else {
-      ans -= nums[i];
+      ans -= nums[i]*nums[i];
     }
   }
 
