@@ -17,7 +17,7 @@ function maxAlternatingSum(nums: number[]): number {
     d = Math.floor(n / 2);
   }
 
-  // Step 4: compute alternating sum
+  // Step 4: compute alternating sum thats problem done mf****
   let ans = 0;
   for (let i = 0; i < n; i++) {
     if (i <= d) {
