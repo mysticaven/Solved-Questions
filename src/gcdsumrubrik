@@ -1,1 +1,83 @@
+import java.util.*;
 
+public class GCDPairCounter {
+
+    // Helper function to count how many elements in arr are divisible by divisor
+    static int countDivisible(int[] arr, int divisor) {
+        int count = 0;
+        for (int val : arr) {
+            if (val % divisor == 0) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    // Step 1: Count numbers divisible by i
+    static int[] calculateDivisibleCounts(int[] arr, int maxVal) {
+        int[] divisibleCounts = new int[maxVal + 1];
+        for (int i = 1; i <= maxVal; i++) {
+            divisibleCounts[i] = countDivisible(arr, i);
+        }
+        return divisibleCounts;
+    }
+
+    // Step 2: Find pairs with exact GCD = i
+    static long[] calculateExactGcdPairs(int[] divisibleCounts, int maxVal) {
+        // ramPairsGcdAtLeast[i] = count of pairs (a, b) where gcd(a, b) is a multiple of i
+        long[] ramPairsGcdAtLeast = new long[maxVal + 1];
+        
+        // ramExactGcdCounts[i] = count of pairs (a, b) where gcd(a, b) == i
+        long[] ramExactGcdCounts = new long[maxVal + 1];
+
+        // Iterate from the max value downwards
+        for (int i = maxVal; i >= 2; i--) {
+            long countOfMultiples = divisibleCounts[i];
+
+            // 1. Calculate all possible pairs where both numbers are divisible by i
+            // This is nC2 = n * (n - 1) / 2
+            ramPairsGcdAtLeast[i] = countOfMultiples * (countOfMultiples - 1) / 2;
+
+            // 2. Subtract pairs whose GCD is a *strict* multiple of i (e.g., 2i, 3i, 4i...).
+            // We've already calculated these exact counts since we're iterating downwards.
+            long pairsToSubtract = 0;
+            for (int multiple = 2; i * multiple <= maxVal; multiple++) {
+                pairsToSubtract += ramExactGcdCounts[i * multiple];
+            }
+
+            // 3. The result is (pairs with GCD >= i) - (pairs with GCD > i)
+            ramExactGcdCounts[i] = ramPairsGcdAtLeast[i] - pairsToSubtract;
+        }
+
+        return ramExactGcdCounts;
+    }
+
+    // Step 3: Print the results
+    static void printGcdCounts(long[] ramExactGcdCounts, int maxVal) {
+        for (int i = 2; i <= maxVal; i++) {
+            System.out.print(ramExactGcdCounts[i] + " ");
+        }
+        System.out.println(); 
+    }
+
+    // Main method to run the program
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        // Read input array and find max value
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        int maxVal = 0;
+        for (int i = 0; i < n; i++) {
+            arr[i] = sc.nextInt();
+            maxVal = Math.max(maxVal, arr[i]);
+        }
+
+        // Run the logic
+        int[] divisibleCounts = calculateDivisibleCounts(arr, maxVal);
+        long[] ramFinalGcdCounts = calculateExactGcdPairs(divisibleCounts, maxVal);
+        printGcdCounts(ramFinalGcdCounts, maxVal);
+
+        sc.close();
+    }
+}
