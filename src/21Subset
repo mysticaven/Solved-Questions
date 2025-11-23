@@ -1,0 +1,110 @@
+// Problem Statement
+// Title: Subset Sum Analysis with Constraints
+
+// Description:
+// Given an array of n positive integers, you need to analyze all possible non-empty subsets where the sum of elements is at least the maximum element in the array.
+
+// Tasks:
+
+// Count the number of valid subsets (subsets with sum ≥ max element)
+// Calculate the sum of all subset sums for valid subsets
+// Count total number of all possible subsets (including empty subset)
+// Input:
+
+// First line: An integer n (1 ≤ n ≤ 50)
+// Second line: n space-separated integers b[1], b[2], ..., b[n] (1 ≤ b[i] ≤ 50)
+// Output: Three lines:
+
+// Count of subsets with sum ≥ max(b)
+// Sum of all subset sums where sum ≥ max(b)
+// Total count of all possible subsets
+// Sample Input:
+
+// 5
+// 1 1 1 2 3
+// Sample Output:
+
+// 24
+// 117
+// 32
+// Explanation:
+
+// Maximum element = 3
+// Valid subsets are those with sum ≥ 3
+// There are 24 such subsets
+// The sum of all these subset sums = 117
+// Total possible subsets (including empty) = 2^5 = 32
+
+import java.util.*;
+
+/**
+ * Problem: Subset Sum Analysis with Constraints
+ * 
+ * Given an array of n positive integers, analyze all possible subsets:
+ * 1. Count subsets with sum >= max element
+ * 2. Calculate sum of all valid subset sums
+ * 3. Count total possible subsets
+ * 
+ * Approach: Dynamic Programming
+ * dp[i][j] = number of ways to achieve sum j using first i elements
+ */
+public class SubsetSumAnalysis {
+    
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        // Read input
+        int n = sc.nextInt();
+        int[] arr = new int[n + 1];
+        
+        int maxElement = 0;
+        for (int i = 1; i <= n; i++) {
+            arr[i] = sc.nextInt();
+            maxElement = Math.max(maxElement, arr[i]);
+        }
+        
+        // DP table: dp[i][j] = count of subsets using first i elements with sum = j
+        long[][] dp = new long[n + 1][51];
+        
+        // Base case: empty subset has sum 0
+        dp[0][0] = 1;
+        
+        // Fill DP table
+        for (int i = 1; i <= n; i++) {
+            dp[i][0] = 1; // Every element can form empty subset
+            
+            for (int sum = 1; sum <= 50; sum++) {
+                // Case 1: Don't include current element
+                dp[i][sum] = dp[i - 1][sum];
+                
+                // Case 2: Include current element (if possible)
+                if (sum >= arr[i]) {
+                    dp[i][sum] += dp[i - 1][sum - arr[i]];
+                }
+            }
+        }
+        
+        // Task 1: Count subsets with sum >= maxElement
+        long validSubsetCount = 0;
+        for (int sum = maxElement; sum <= 50; sum++) {
+            validSubsetCount += dp[n][sum];
+        }
+        System.out.println(validSubsetCount);
+        
+        // Task 2: Sum of all valid subset sums
+        long sumOfSubsetSums = 0;
+        for (int sum = maxElement; sum <= 50; sum++) {
+            sumOfSubsetSums += (dp[n][sum] * sum);
+        }
+        System.out.println(sumOfSubsetSums);
+        
+        // Task 3: Total count of all subsets (2^n)
+        long totalSubsets = 0;
+        for (int sum = 0; sum <= 50; sum++) {
+            totalSubsets += dp[n][sum];
+        }
+        System.out.println(totalSubsets);
+        
+        sc.close();
+    }
+}
